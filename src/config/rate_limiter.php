@@ -8,7 +8,7 @@ return [
     'default' => [
         'limit_level' => 'user', // user | device | ip | api
         'udid_name' => 'mid',
-        'get' => [1, 10], // 1秒请求5次
+        'get' => [1, 10], // 1秒请求10次
         'post' => [2, 1], // 2秒请求1次
     ],
     'api_gateway' => false,

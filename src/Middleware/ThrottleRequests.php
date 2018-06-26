@@ -78,12 +78,12 @@ class ThrottleRequests
             $apiName = $request->getPathInfo();
         }
 
-        $defaultLimit = config("rate_limiter.default.get", [1, 60]);
+        $defaultLimit = config("rate_limiter.default.get", [1, 10]);
         if (strtolower($method) === 'post') {
             $defaultLimit = config("rate_limiter.default.post", [2, 1]);
         }
 
-        $limitInfo = config("rate_limiter.{$apiName}", $defaultLimit);
+        $limitInfo = config("rate_limiter.api_limit.{$apiName}", $defaultLimit);
         $limitLevel = config("rate_limiter.default.limit_level", 'user');
         if (isset($limitInfo['limit_level'])) {
             $limitLevel = $limitInfo['limit_level'];

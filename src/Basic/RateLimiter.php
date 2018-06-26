@@ -3,7 +3,6 @@
 namespace RateLimiter\Basic;
 
 use Illuminate\Redis\RedisManager;
-use Illuminate\Support\InteractsWithTime;
 
 class RateLimiter
 {
