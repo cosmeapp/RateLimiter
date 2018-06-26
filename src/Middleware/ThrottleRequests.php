@@ -44,7 +44,7 @@ class ThrottleRequests
         list($key, $decayUnits, $maxAttempts) = $this->resolveRequestLimitRate($request);
 
         if ($this->limiter->tooManyAttempts($key, $maxAttempts, $decayUnits)) {
-            return $this->buildResponse($key, $maxAttempts);
+            return $this->buildResponse($request, $key, $maxAttempts);
         }
 
         $this->limiter->hit($key, $decayUnits);
@@ -130,19 +130,26 @@ class ThrottleRequests
     /**
      * Create a 'too many attempts' response.
      *
+     * @param $request
      * @param  string $key
-     * @param  int    $maxAttempts
-     *
-     * @return \Illuminate\Http\Response
+     * @param  int $maxAttempts
+     * @return Response
      */
-    protected function buildResponse($key, $maxAttempts)
+    protected function buildResponse($request, $key, $maxAttempts)
     {
         $content = [
             'status' => 0,
             'code' => config('rate_limiter.error_code', 90429),
             'msg' => '请求过于频繁，请稍后再试.',
         ];
-        $response = new Response($content, 200);
+
+        $header = [];
+        if ($request->headers->has('authorization')) {
+            $token = $request->header('authorization');
+            $header = ['Authorization' => $token];
+        }
+
+        $response = new Response($content, 200, $header);
 
         return $this->addHeaders(
             $response,
@@ -155,12 +162,13 @@ class ThrottleRequests
     /**
      * Add the limit header information to the given response.
      *
-     * @param  \Illuminate\Http\Response $response
-     * @param  int                       $maxAttempts
-     * @param  int                       $remainingAttempts
-     * @param  int|null                  $retryAfter
      *
-     * @return \Illuminate\Http\Response
+     * @param Response $response
+     * @param $maxAttempts
+     * @param $remainingAttempts
+     * @param null $retryAfter
+     *
+     * @return Response
      */
     protected function addHeaders(Response $response, $maxAttempts, $remainingAttempts, $retryAfter = null)
     {
