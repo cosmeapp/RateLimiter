@@ -1,0 +1,21 @@
+{
+    "name": "cosmeapp/rate-limiter",
+    "description": "rate-limiter for lumen/laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "motian",
+            "email": "wence.xie@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RateLimiter\\": "src/"
+        }
+    }
+}
