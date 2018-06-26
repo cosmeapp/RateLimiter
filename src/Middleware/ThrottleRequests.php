@@ -48,14 +48,17 @@ class ThrottleRequests
         }
 
         $this->limiter->hit($key, $decayUnits);
-
         $response = $next($request);
 
-        return $this->addHeaders(
-            $response,
-            $maxAttempts,
-            $this->calculateRemainingAttempts($key, $maxAttempts)
-        );
+        if ($response instanceof Response) {
+            return $this->addHeaders(
+                $response,
+                $maxAttempts,
+                $this->calculateRemainingAttempts($key, $maxAttempts)
+            );
+        }
+
+        return $response;
     }
 
     /**
@@ -161,7 +164,6 @@ class ThrottleRequests
 
     /**
      * Add the limit header information to the given response.
-     *
      *
      * @param Response $response
      * @param $maxAttempts
